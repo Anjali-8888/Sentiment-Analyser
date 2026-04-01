@@ -8,10 +8,23 @@ let chart;
 let postsPerPage = 5;
 let currentPage = 1;
 
-// Use the active key provided by the user
-const gemini = 'AIzaSyA4ilv0LvtzY4D2rK6FgdLDHchhc4eZ3Fg';
+// Use the API key from local storage
+let geminiKey = localStorage.getItem('geminiApiKey') || '';
 
 window.onload = function () {
+    const settingsBtn = document.getElementById('settingsBtn');
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const newKey = prompt("Enter your Gemini API Key:", geminiKey);
+            if (newKey !== null && newKey.trim() !== '') {
+                geminiKey = newKey.trim();
+                localStorage.setItem('geminiApiKey', geminiKey);
+                showToast("API Key updated successfully", "success");
+            }
+        });
+    }
+
     loadFromLocalStorage();
     initChart();
     updateMetrics();
@@ -124,7 +137,17 @@ document.getElementById('input').addEventListener('keydown', function (e) {
 
 // Prompt to gemini
 async function analyzeSentimentWithGemini(text) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${gemini}`;
+    if (!geminiKey) {
+        const newKey = prompt("Please enter your Gemini API Key to perform analysis:");
+        if (newKey && newKey.trim() !== '') {
+            geminiKey = newKey.trim();
+            localStorage.setItem('geminiApiKey', geminiKey);
+        } else {
+            throw new Error('API Key is required');
+        }
+    }
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`;
 
     const prompt = `Analyze the sentiment of the following text. You MUST respond with ONLY valid JSON and nothing else. Do not use markdown code blocks.
 Strict JSON format required:
