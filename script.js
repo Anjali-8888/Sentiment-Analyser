@@ -149,7 +149,7 @@ async function analyzeSentimentWithGemini(text) {
 
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`;
 
-    const prompt = `Analyze the sentiment of the following text. You MUST respond with ONLY valid JSON and nothing else. Do not use markdown code blocks.
+    const geminiPrompt = `Analyze the sentiment of the following text. You MUST respond with ONLY valid JSON and nothing else. Do not use markdown code blocks.
 Strict JSON format required:
 {
   "sentiment": "positive" or "neutral" or "negative",
@@ -166,7 +166,7 @@ Text to analyze: "${text}"`;
         },
         body: JSON.stringify({
             contents: [{
-                parts: [{ text: prompt }]
+                parts: [{ text: geminiPrompt }]
             }]
         })
     });
