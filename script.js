@@ -16,7 +16,7 @@ window.onload = function () {
     if (settingsBtn) {
         settingsBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            const newKey = prompt("Enter your Gemini API Key:", geminiKey);
+            const newKey = window.prompt("Enter your Gemini API Key:", geminiKey);
             if (newKey !== null && newKey.trim() !== '') {
                 geminiKey = newKey.trim();
                 localStorage.setItem('geminiApiKey', geminiKey);
@@ -138,7 +138,7 @@ document.getElementById('input').addEventListener('keydown', function (e) {
 // Prompt to gemini
 async function analyzeSentimentWithGemini(text) {
     if (!geminiKey) {
-        const newKey = prompt("Please enter your Gemini API Key to perform analysis:");
+        const newKey = window.prompt("Please enter your Gemini API Key to perform analysis:");
         if (newKey && newKey.trim() !== '') {
             geminiKey = newKey.trim();
             localStorage.setItem('geminiApiKey', geminiKey);
