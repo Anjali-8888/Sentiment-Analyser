@@ -3,7 +3,7 @@
 ## Project Overview
 A web-based multi language sentiment analysis dashboard that leverages Google's Gemini AI to analyze text sentiment in real-time. You can input a sentence and it analyzes the sentiment of statement as positive, negative or neutral. 
 
-## [Website Link](https://arnav-yadav.github.io/Sentiment/)
+## [Website Link](https://anjali-8888.github.io/Sentiment-Analyser/)
 
 ## Project Objectives
 1. Implement a responsive web application using HTML, CSS, and JavaScript
