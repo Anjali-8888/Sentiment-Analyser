@@ -108,7 +108,7 @@ async function analyzePost() {
 
     } catch (error) {
         console.error('Error analyzing sentiment:', error);
-        showToast('Error analyzing sentiment. Please try again later.', 'error');
+        showToast(`Error: ${error.message}`, 'error');
     } finally {
         // Restore UI
         input.disabled = false;
@@ -154,7 +154,7 @@ Text to analyze: "${text}"`;
     });
 
     if (!response.ok) {
-        throw new Error('API request failed');
+        throw new Error(`API request failed: HTTP ${response.status} ${response.statusText}`);
     }
 
     const data = await response.json();
