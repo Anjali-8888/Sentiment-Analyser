@@ -8,8 +8,8 @@ let chart;
 let postsPerPage = 5;
 let currentPage = 1;
 
-// Hardcoded API key for public use
-const geminiKey = 'AIzaSyAjQAQPMI00ku9_Af3llqpdDBUAC_qQY-Y';
+// Replace with your valid API key (the previous one was reported leaked)
+const geminiKey = "AIzaSyCvW6CrMeVSbfRvhDTEle4U5wtZDKQ6Y3A";
 
 window.onload = function () {
     loadFromLocalStorage();
@@ -88,6 +88,11 @@ async function analyzePost() {
         return;
     }
 
+    if (geminiKey === 'YOUR_NEW_API_KEY_HERE' || !geminiKey) {
+        showToast('Please set a valid API key in script.js', 'error');
+        return;
+    }
+
     try {
         // UI Loading State
         input.disabled = true;
@@ -124,7 +129,7 @@ document.getElementById('input').addEventListener('keydown', function (e) {
 
 // Prompt to gemini
 async function analyzeSentimentWithGemini(text) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
 
     const geminiPrompt = `Analyze the sentiment of the following text. You MUST respond with ONLY valid JSON and nothing else. Do not use markdown code blocks.
 Strict JSON format required:
