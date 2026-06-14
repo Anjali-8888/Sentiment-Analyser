@@ -557,6 +557,21 @@ textarea:focus {
     gap: 6px;
 }
 
+.sentiment-badge.positive {
+    background: var(--pos-bg);
+    color: var(--pos-color);
+}
+
+.sentiment-badge.neutral {
+    background: var(--neu-bg);
+    color: var(--neu-color);
+}
+
+.sentiment-badge.negative {
+    background: var(--neg-bg);
+    color: var(--neg-color);
+}
+
 .post-content {
     font-size: 0.95rem;
     color: var(--text-heading);

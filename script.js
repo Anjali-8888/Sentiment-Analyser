@@ -56,6 +56,9 @@ function clearHistory() {
         updateMetrics();
         renderPosts();
         updateChart();
+        if (reportsView && !reportsView.classList.contains('hidden')) {
+            generateReport();
+        }
         showToast("History cleared successfully", "success");
     }
 }
@@ -95,7 +98,7 @@ async function analyzePost() {
         return;
     }
 
-    if (!geminiKey || geminiKey === 'YOUR_NEW_API_KEY_HERE') {
+    if (!geminiKey || geminiKey === 'YOUR_NEW_API_KEY_HERE' || geminiKey === 'YOUR_GEMINI_API_KEY') {
         showToast('Please set a valid API key in Settings', 'error');
         openSettingsModal();
         return;
@@ -192,7 +195,7 @@ Text to analyze: "${text}"`;
 
         return {
             sentiment: sentiment,
-            confidence: parsed.confidence || 0,
+            confidence: Number(parsed.confidence) || 0,
             emotion: parsed.emotion || 'unknown',
             keyPhrase: parsed.key_phrase || ''
         };
@@ -607,9 +610,21 @@ function generateReport() {
     if (repDominantEmotion) repDominantEmotion.textContent = dominant;
 
     // Proportions
-    const posPct = Math.round((positivePosts.length / total) * 100);
-    const negPct = Math.round((negativePosts.length / total) * 100);
-    const neuPct = 100 - posPct - negPct; // Ensure they sum to exactly 100%
+    let posPct = Math.round((positivePosts.length / total) * 100);
+    let negPct = Math.round((negativePosts.length / total) * 100);
+    let neuPct = Math.round((neutralPosts.length / total) * 100);
+
+    // Adjust to ensure they sum to exactly 100% and stay non-negative
+    const diff = 100 - (posPct + negPct + neuPct);
+    if (diff !== 0) {
+        if (neutralPosts.length > 0) {
+            neuPct += diff;
+        } else if (positivePosts.length > 0) {
+            posPct += diff;
+        } else if (negativePosts.length > 0) {
+            negPct += diff;
+        }
+    }
 
     if (propPos) propPos.style.width = `${posPct}%`;
     if (propNeu) propNeu.style.width = `${neuPct}%`;
