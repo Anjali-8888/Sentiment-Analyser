@@ -500,3 +500,208 @@ window.addEventListener('click', function (e) {
         closeSettingsModal();
     }
 });
+
+// Navigation toggling
+const dashboardLink = document.getElementById('dashboardLink');
+const reportsLink = document.getElementById('reportsLink');
+const dashboardView = document.getElementById('dashboardView');
+const reportsView = document.getElementById('reportsView');
+
+if (dashboardLink) {
+    dashboardLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        showView('dashboard');
+    });
+}
+
+if (reportsLink) {
+    reportsLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        showView('reports');
+    });
+}
+
+function showView(view) {
+    if (view === 'dashboard') {
+        if (dashboardView) dashboardView.classList.remove('hidden');
+        if (reportsView) reportsView.classList.add('hidden');
+        if (dashboardLink) dashboardLink.classList.add('active');
+        if (reportsLink) reportsLink.classList.remove('active');
+    } else if (view === 'reports') {
+        if (dashboardView) dashboardView.classList.add('hidden');
+        if (reportsView) reportsView.classList.remove('hidden');
+        if (dashboardLink) dashboardLink.classList.remove('active');
+        if (reportsLink) reportsLink.classList.add('active');
+        generateReport();
+    }
+}
+
+function generateReport() {
+    const repTotal = document.getElementById('repTotal');
+    const repAvgConfidence = document.getElementById('repAvgConfidence');
+    const repDominantEmotion = document.getElementById('repDominantEmotion');
+
+    const propPos = document.getElementById('propPos');
+    const propNeu = document.getElementById('propNeu');
+    const propNeg = document.getElementById('propNeg');
+
+    const lblPropPos = document.getElementById('lblPropPos');
+    const lblPropNeu = document.getElementById('lblPropNeu');
+    const lblPropNeg = document.getElementById('lblPropNeg');
+
+    const repNegCount = document.getElementById('repNegCount');
+    const repPosCount = document.getElementById('repPosCount');
+    const repNegList = document.getElementById('repNegList');
+    const repPosList = document.getElementById('repPosList');
+    const reportsTableBody = document.getElementById('reportsTableBody');
+
+    const total = posts.length;
+    if (repTotal) repTotal.textContent = total;
+
+    if (total === 0) {
+        if (repAvgConfidence) repAvgConfidence.textContent = '0%';
+        if (repDominantEmotion) repDominantEmotion.textContent = '-';
+        if (propPos) propPos.style.width = '0%';
+        if (propNeu) propNeu.style.width = '0%';
+        if (propNeg) propNeg.style.width = '0%';
+        if (lblPropPos) lblPropPos.textContent = '0%';
+        if (lblPropNeu) lblPropNeu.textContent = '0%';
+        if (lblPropNeg) lblPropNeg.textContent = '0%';
+        if (repNegCount) repNegCount.textContent = '0 Issues';
+        if (repPosCount) repPosCount.textContent = '0 Mentions';
+        if (repNegList) repNegList.innerHTML = '<div class="empty-highlight-state">No critical feedback to report.</div>';
+        if (repPosList) repPosList.innerHTML = '<div class="empty-highlight-state">No positive praise highlights to report yet.</div>';
+        if (reportsTableBody) {
+            reportsTableBody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No data available in report</td>
+                </tr>
+            `;
+        }
+        return;
+    }
+
+    // Calculations
+    const positivePosts = posts.filter(p => p.sentiment === 'positive');
+    const negativePosts = posts.filter(p => p.sentiment === 'negative');
+    const neutralPosts = posts.filter(p => p.sentiment === 'neutral');
+
+    const avgConfidence = Math.round(posts.reduce((sum, p) => sum + (p.confidence || 0), 0) / total);
+    if (repAvgConfidence) repAvgConfidence.textContent = `${avgConfidence}%`;
+
+    // Dominant Emotion
+    const emotions = {};
+    posts.forEach(p => {
+        if (p.emotion) {
+            emotions[p.emotion] = (emotions[p.emotion] || 0) + 1;
+        }
+    });
+    let dominant = '-';
+    let maxCount = 0;
+    for (const [emo, count] of Object.entries(emotions)) {
+        if (count > maxCount) {
+            dominant = emo;
+            maxCount = count;
+        }
+    }
+    if (repDominantEmotion) repDominantEmotion.textContent = dominant;
+
+    // Proportions
+    const posPct = Math.round((positivePosts.length / total) * 100);
+    const negPct = Math.round((negativePosts.length / total) * 100);
+    const neuPct = 100 - posPct - negPct; // Ensure they sum to exactly 100%
+
+    if (propPos) propPos.style.width = `${posPct}%`;
+    if (propNeu) propNeu.style.width = `${neuPct}%`;
+    if (propNeg) propNeg.style.width = `${negPct}%`;
+
+    if (lblPropPos) lblPropPos.textContent = `${posPct}%`;
+    if (lblPropNeu) lblPropNeu.textContent = `${neuPct}%`;
+    if (lblPropNeg) lblPropNeg.textContent = `${negPct}%`;
+
+    // Populate Critical Feedback List
+    if (repNegCount) repNegCount.textContent = `${negativePosts.length} Issues`;
+    if (repNegList) {
+        if (negativePosts.length === 0) {
+            repNegList.innerHTML = '<div class="empty-highlight-state">No critical feedback to report.</div>';
+        } else {
+            repNegList.innerHTML = '';
+            negativePosts.slice(0, 5).forEach(post => {
+                const item = document.createElement('div');
+                item.className = 'highlight-item';
+                item.innerHTML = `
+                    <div class="highlight-text">"${escapeHtml(post.text)}"</div>
+                    <div class="highlight-meta">
+                        <span><i class="fa-solid fa-masks-theater text-red"></i> Emotion: <strong style="text-transform: capitalize;">${escapeHtml(post.emotion)}</strong></span>
+                        <span><i class="fa-solid fa-bullseye"></i> ${post.confidence}%</span>
+                    </div>
+                `;
+                repNegList.appendChild(item);
+            });
+        }
+    }
+
+    // Populate Praise Highlights List
+    if (repPosCount) repPosCount.textContent = `${positivePosts.length} Mentions`;
+    if (repPosList) {
+        if (positivePosts.length === 0) {
+            repPosList.innerHTML = '<div class="empty-highlight-state">No positive praise highlights to report yet.</div>';
+        } else {
+            repPosList.innerHTML = '';
+            positivePosts.slice(0, 5).forEach(post => {
+                const item = document.createElement('div');
+                item.className = 'highlight-item';
+                item.innerHTML = `
+                    <div class="highlight-text">"${escapeHtml(post.text)}"</div>
+                    <div class="highlight-meta">
+                        <span><i class="fa-solid fa-masks-theater text-green"></i> Emotion: <strong style="text-transform: capitalize;">${escapeHtml(post.emotion)}</strong></span>
+                        <span><i class="fa-solid fa-bullseye"></i> ${post.confidence}%</span>
+                    </div>
+                `;
+                repPosList.appendChild(item);
+            });
+        }
+    }
+
+    // Populate Detailed Table
+    if (reportsTableBody) {
+        reportsTableBody.innerHTML = '';
+        posts.forEach(post => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${post.timestamp}</td>
+                <td>${escapeHtml(post.text)}</td>
+                <td><span class="sentiment-badge ${post.sentiment}">${post.sentiment}</span></td>
+                <td><strong>${post.confidence}%</strong></td>
+                <td style="text-transform: capitalize;">${escapeHtml(post.emotion)}</td>
+                <td class="key-phrase">"${escapeHtml(post.keyPhrase)}"</td>
+            `;
+            reportsTableBody.appendChild(tr);
+        });
+    }
+}
+
+function exportCSV() {
+    if (posts.length === 0) {
+        showToast('No feedback data to export', 'error');
+        return;
+    }
+
+    let csvContent = 'Timestamp,Text,Sentiment,Confidence,Emotion,Key Phrase\n';
+
+    posts.forEach(post => {
+        const textEscaped = post.text.replace(/"/g, '""');
+        const phraseEscaped = (post.keyPhrase || '').replace(/"/g, '""');
+        csvContent += `"${post.timestamp}","${textEscaped}","${post.sentiment}",${post.confidence},"${post.emotion}","${phraseEscaped}"\n`;
+    });
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `SentiPulse_Feedback_Report_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast('Report exported as CSV successfully', 'success');
+}

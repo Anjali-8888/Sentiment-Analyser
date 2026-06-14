@@ -39,8 +39,8 @@
                 <span class="brand-name">SentiPulse</span>
             </div>
             <div class="nav-links">
-                <a href="#" class="active">Dashboard</a>
-                <a href="#">Reports</a>
+                <a href="#" class="active" id="dashboardLink">Dashboard</a>
+                <a href="#" id="reportsLink">Reports</a>
                 <a href="#" id="settingsBtn">Settings</a>
             </div>
             <div class="nav-actions">
@@ -55,9 +55,11 @@
     </nav>
 
     <div class="main-container">
-        <!-- Hero Section -->
-        <div class="page-header animate-fade-in">
-            <h1>Customer Sentiment Overview</h1>
+        <!-- Dashboard View -->
+        <div id="dashboardView">
+            <!-- Hero Section -->
+            <div class="page-header animate-fade-in">
+                <h1>Customer Sentiment Overview</h1>
             <p>Analyze and track customer feedback in real-time across your entire platform.</p>
         </div>
 
@@ -182,6 +184,127 @@ Example: 'The new dashboard update is absolutely brilliant. It saved my team 5 h
                 </div>
             </div>
 
+        </div>
+        </div>
+        <!-- End Dashboard View -->
+
+        <!-- Reports View -->
+        <div id="reportsView" class="hidden animate-fade-in">
+            <!-- Reports Header -->
+            <div class="reports-header">
+                <div>
+                    <h1>Feedback & Sentiment Report</h1>
+                    <p>Comprehensive analytics compiled from all analyzed customer feedback.</p>
+                </div>
+                <button class="btn-secondary" onclick="exportCSV()">
+                    <i class="fa-solid fa-file-export"></i> Export CSV
+                </button>
+            </div>
+
+            <!-- Reports Summary Cards -->
+            <section class="reports-grid mt-6">
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-label">Total Submissions</span>
+                        <div class="icon-wrap bg-blue"><i class="fa-solid fa-folder-open"></i></div>
+                    </div>
+                    <div class="metric-value">
+                        <span id="repTotal">0</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-label">Avg. Confidence</span>
+                        <div class="icon-wrap bg-green"><i class="fa-solid fa-chart-line"></i></div>
+                    </div>
+                    <div class="metric-value">
+                        <span id="repAvgConfidence">0%</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-label">Dominant Emotion</span>
+                        <div class="icon-wrap bg-yellow"><i class="fa-solid fa-heart"></i></div>
+                    </div>
+                    <div class="metric-value">
+                        <span id="repDominantEmotion" style="text-transform: capitalize;">-</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sentiment Proportion Bar Card -->
+            <div class="premium-card mt-6">
+                <div class="card-header">
+                    <h2>Sentiment Proportional Ratio</h2>
+                    <i class="fa-solid fa-sliders text-muted"></i>
+                </div>
+                <div style="padding: 0 1.5rem 1.5rem;">
+                    <div class="proportion-bar-container">
+                        <div id="propPos" class="proportion-segment bg-pos" style="width: 0%" title="Positive"></div>
+                        <div id="propNeu" class="proportion-segment bg-neu" style="width: 0%" title="Neutral"></div>
+                        <div id="propNeg" class="proportion-segment bg-neg" style="width: 0%" title="Negative"></div>
+                    </div>
+                    <div class="proportion-labels mt-2">
+                        <span class="text-green"><i class="fa-solid fa-circle"></i> Positive: <strong id="lblPropPos">0%</strong></span>
+                        <span class="text-yellow"><i class="fa-solid fa-circle"></i> Neutral: <strong id="lblPropNeu">0%</strong></span>
+                        <span class="text-red"><i class="fa-solid fa-circle"></i> Negative: <strong id="lblPropNeg">0%</strong></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Insights / Key Highlights Column Group -->
+            <div class="reports-columns mt-6">
+                <!-- Critical / Action Items (Negative feedbacks) -->
+                <div class="premium-card">
+                    <div class="card-header border-bottom">
+                        <h2>Critical Feedback (Action Items)</h2>
+                        <span class="badge badge-neg" id="repNegCount">0 Issues</span>
+                    </div>
+                    <div class="highlight-list" id="repNegList">
+                        <div class="empty-highlight-state">No critical feedback to report.</div>
+                    </div>
+                </div>
+
+                <!-- Praise (Positive feedbacks) -->
+                <div class="premium-card">
+                    <div class="card-header border-bottom">
+                        <h2>Praise Highlights</h2>
+                        <span class="badge badge-pos" id="repPosCount">0 Mentions</span>
+                    </div>
+                    <div class="highlight-list" id="repPosList">
+                        <div class="empty-highlight-state">No positive praise highlights to report yet.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Feedback Table -->
+            <div class="premium-card mt-6">
+                <div class="card-header border-bottom">
+                    <h2>All Feedback Details</h2>
+                    <i class="fa-solid fa-table text-muted"></i>
+                </div>
+                <div class="table-container">
+                    <table class="reports-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Feedback Text</th>
+                                <th>Sentiment</th>
+                                <th>Confidence</th>
+                                <th>Dominant Emotion</th>
+                                <th>Key Phrase</th>
+                            </tr>
+                        </thead>
+                        <tbody id="reportsTableBody">
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">No data available in report</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
