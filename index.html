@@ -185,6 +185,39 @@ Example: 'The new dashboard update is absolutely brilliant. It saved my team 5 h
         </div>
     </div>
 
+    <!-- Settings Modal -->
+    <div id="settingsModal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>API Settings</h2>
+                <button class="btn-close" id="closeSettingsBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-description">To run sentiment analysis, please enter your Gemini API Key. Your key is
+                    saved locally in your browser.</p>
+                <div class="form-group">
+                    <label for="apiKeyInput">Gemini API Key</label>
+                    <div class="input-with-button">
+                        <input type="password" id="apiKeyInput" placeholder="Enter your Gemini API key...">
+                        <button type="button" class="btn-icon-toggle" id="toggleKeyVisibility"
+                            title="Toggle visibility">
+                            <i class="fa-regular fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="key-help">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span>Don't have a key? <a href="https://aistudio.google.com/" target="_blank" rel="noopener">Get a
+                            free Gemini API key from Google AI Studio</a></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" id="cancelSettingsBtn">Cancel</button>
+                <button class="btn-primary" id="saveSettingsBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 

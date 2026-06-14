@@ -8,8 +8,15 @@ let chart;
 let postsPerPage = 5;
 let currentPage = 1;
 
-// Replace with your valid API key (the previous one was reported leaked)
-const geminiKey = "AIzaSyCvW6CrMeVSbfRvhDTEle4U5wtZDKQ6Y3A";
+// Load API key from local storage or fallback to the default key
+const DEFAULT_KEY = "YOUR_GEMINI_API_KEY";
+let geminiKey = localStorage.getItem('sentiPulseApiKey') || DEFAULT_KEY;
+
+// If the stored key is the old leaked key, clean it up and use the default key
+if (geminiKey === "AIzaSyCvW6CrMeVSbfRvhDTEle4U5wtZDKQ6Y3A") {
+    localStorage.removeItem('sentiPulseApiKey');
+    geminiKey = DEFAULT_KEY;
+}
 
 window.onload = function () {
     loadFromLocalStorage();
@@ -88,8 +95,9 @@ async function analyzePost() {
         return;
     }
 
-    if (geminiKey === 'YOUR_NEW_API_KEY_HERE' || !geminiKey) {
-        showToast('Please set a valid API key in script.js', 'error');
+    if (!geminiKey || geminiKey === 'YOUR_NEW_API_KEY_HERE') {
+        showToast('Please set a valid API key in Settings', 'error');
+        openSettingsModal();
         return;
     }
 
@@ -108,7 +116,13 @@ async function analyzePost() {
 
     } catch (error) {
         console.error('Error analyzing sentiment:', error);
-        showToast(`Error: ${error.message}`, 'error');
+        const errorMsg = error.message || '';
+        if (errorMsg.includes('HTTP 403') || errorMsg.includes('HTTP 404') || errorMsg.includes('API request failed')) {
+            showToast('API request failed. Please check your API key in Settings.', 'error');
+            setTimeout(openSettingsModal, 1000);
+        } else {
+            showToast(`Error: ${errorMsg || 'Failed to analyze sentiment.'}`, 'error');
+        }
     } finally {
         // Restore UI
         input.disabled = false;
@@ -129,7 +143,7 @@ document.getElementById('input').addEventListener('keydown', function (e) {
 
 // Prompt to gemini
 async function analyzeSentimentWithGemini(text) {
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${geminiKey}`;
 
     const geminiPrompt = `Analyze the sentiment of the following text. You MUST respond with ONLY valid JSON and nothing else. Do not use markdown code blocks.
 Strict JSON format required:
@@ -154,7 +168,7 @@ Text to analyze: "${text}"`;
     });
 
     if (!response.ok) {
-        throw new Error(`API request failed: HTTP ${response.status} ${response.statusText}`);
+        throw new Error(`API request failed: HTTP ${response.status}`);
     }
 
     const data = await response.json();
@@ -413,3 +427,76 @@ function updateMetrics() {
     animateValue(elements.neg, parseInt(elements.neg.innerText) || 0, targetNeg, 1000);
     animateValue(elements.neu, parseInt(elements.neu.innerText) || 0, targetNeu, 1000);
 }
+
+// Settings Modal Logic
+const settingsModal = document.getElementById('settingsModal');
+const settingsBtn = document.getElementById('settingsBtn');
+const closeSettingsBtn = document.getElementById('closeSettingsBtn');
+const cancelSettingsBtn = document.getElementById('cancelSettingsBtn');
+const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+const apiKeyInput = document.getElementById('apiKeyInput');
+const toggleKeyVisibility = document.getElementById('toggleKeyVisibility');
+
+if (settingsBtn) {
+    settingsBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        openSettingsModal();
+    });
+}
+
+if (closeSettingsBtn) {
+    closeSettingsBtn.addEventListener('click', closeSettingsModal);
+}
+
+if (cancelSettingsBtn) {
+    cancelSettingsBtn.addEventListener('click', closeSettingsModal);
+}
+
+if (saveSettingsBtn) {
+    saveSettingsBtn.addEventListener('click', function () {
+        const newKey = apiKeyInput.value.trim();
+        if (newKey && newKey !== "AIzaSyCvW6CrMeVSbfRvhDTEle4U5wtZDKQ6Y3A") {
+            localStorage.setItem('sentiPulseApiKey', newKey);
+            geminiKey = newKey;
+            showToast('API Key saved successfully', 'success');
+        } else {
+            localStorage.removeItem('sentiPulseApiKey');
+            geminiKey = DEFAULT_KEY;
+            showToast('API Key cleared. Using default key.', 'info');
+        }
+        closeSettingsModal();
+    });
+}
+
+if (toggleKeyVisibility) {
+    toggleKeyVisibility.addEventListener('click', function () {
+        const icon = toggleKeyVisibility.querySelector('i');
+        if (apiKeyInput.type === 'password') {
+            apiKeyInput.type = 'text';
+            icon.className = 'fa-regular fa-eye-slash';
+        } else {
+            apiKeyInput.type = 'password';
+            icon.className = 'fa-regular fa-eye';
+        }
+    });
+}
+
+function openSettingsModal() {
+    if (settingsModal && apiKeyInput) {
+        apiKeyInput.value = localStorage.getItem('sentiPulseApiKey') || '';
+        settingsModal.classList.remove('hidden');
+    }
+}
+
+function closeSettingsModal() {
+    if (settingsModal) {
+        settingsModal.classList.add('hidden');
+    }
+}
+
+// Close modal if clicked outside
+window.addEventListener('click', function (e) {
+    if (e.target === settingsModal) {
+        closeSettingsModal();
+    }
+});
