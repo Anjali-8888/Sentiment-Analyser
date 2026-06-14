@@ -544,7 +544,7 @@ textarea:focus {
 }
 
 .post {
-    background: white;
+    background: var(--surface-default);
     border: 1px solid var(--border-strong);
     padding: 1.25rem;
     border-radius: var(--radius-lg);
@@ -622,7 +622,7 @@ textarea:focus {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    background: #F8FAFC;
+    background: var(--bg-page);
     padding: 0.75rem;
     border-radius: var(--radius-md);
     border: 1px solid var(--border-subtle);
@@ -655,14 +655,14 @@ textarea:focus {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #F8FAFC;
+    background: var(--bg-page);
     border-radius: 0 0 var(--radius-xl) var(--radius-xl);
 }
 
 .btn-icon {
     width: 32px;
     height: 32px;
-    background: white;
+    background: var(--surface-default);
     border: 1px solid var(--border-strong);
     border-radius: var(--radius-sm);
     color: var(--text-body);
@@ -1150,7 +1150,7 @@ textarea:focus {
 }
 
 .reports-table th {
-    background: #F8FAFC;
+    background: var(--bg-page);
     color: var(--text-muted);
     font-weight: 600;
     text-transform: uppercase;
@@ -1159,7 +1159,7 @@ textarea:focus {
 }
 
 .reports-table tbody tr:hover {
-    background: #F8FAFC;
+    background: var(--bg-page);
 }
 
 .text-center {
@@ -1170,6 +1170,8 @@ textarea:focus {
 body,
 .metric-card,
 .premium-card,
+.post,
+.post-footer,
 nav,
 input,
 textarea,
