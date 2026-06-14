@@ -1180,12 +1180,15 @@ td {
 }
 
 /* Glassmorphism Styles & Hover highlights */
-.premium-card, .metric-card {
+.premium-card,
+.metric-card {
     background: var(--surface-default);
     backdrop-filter: blur(16px);
     border: 1px solid rgba(226, 232, 240, 0.4);
 }
-.dark-theme .premium-card, .dark-theme .metric-card {
+
+.dark-theme .premium-card,
+.dark-theme .metric-card {
     border: 1px solid rgba(30, 41, 59, 0.5);
 }
 
@@ -1205,6 +1208,7 @@ td {
     border-radius: 50%;
     transition: var(--transition-snappy);
 }
+
 .btn-icon-nav:hover {
     color: var(--text-heading);
     background: var(--border-subtle);
@@ -1223,9 +1227,17 @@ td {
 }
 
 @keyframes skeleton-pulse {
-    0% { opacity: 0.6; }
-    50% { opacity: 0.3; }
-    100% { opacity: 0.6; }
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
 }
 
 .skeleton-line {
@@ -1284,6 +1296,7 @@ td {
     .reports-columns {
         grid-template-columns: 1fr;
     }
+
     .reports-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -1293,6 +1306,7 @@ td {
     .reports-grid {
         grid-template-columns: 1fr;
     }
+
     .reports-header {
         flex-direction: column;
         align-items: flex-start;

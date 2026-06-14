@@ -850,7 +850,7 @@ function initTrendChart() {
                     },
                     ticks: {
                         color: textColor,
-                        callback: function(value) {
+                        callback: function (value) {
                             if (value === 100) return 'Positive';
                             if (value === 0) return 'Neutral';
                             if (value === -100) return 'Negative';
@@ -870,7 +870,7 @@ function initTrendChart() {
                     borderColor: isDark ? '#334155' : '#e2e8f0',
                     borderWidth: 1,
                     callbacks: {
-                        label: function(context) {
+                        label: function (context) {
                             const val = context.raw;
                             if (val > 0) return `Positive (${val}%)`;
                             if (val < 0) return `Negative (${Math.abs(val)}%)`;
@@ -888,7 +888,7 @@ function updateTrendChart() {
 
     // Get the last 10 posts in chronological order (oldest to newest)
     const last10 = posts.slice(0, 10).reverse();
-    
+
     const labels = last10.map(p => p.timestamp);
     const data = last10.map(p => {
         if (p.sentiment === 'positive') return p.confidence || 0;
@@ -898,7 +898,7 @@ function updateTrendChart() {
 
     trendChart.data.labels = labels;
     trendChart.data.datasets[0].data = data;
-    
+
     // Adjust gradient color
     const ctx = document.getElementById('trendChart').getContext('2d');
     const gradient = ctx.createLinearGradient(0, 0, 0, 300);
@@ -920,7 +920,7 @@ function updateTrendChart() {
 // ==========================================
 function showSkeleton() {
     const postsContainer = document.getElementById('postsContainer');
-    
+
     // Check if empty-state is present, remove it temporarily
     const emptyState = postsContainer.querySelector('.empty-state');
     if (emptyState) {

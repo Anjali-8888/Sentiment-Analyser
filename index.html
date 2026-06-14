@@ -63,142 +63,142 @@
             <!-- Hero Section -->
             <div class="page-header animate-fade-in">
                 <h1>Customer Sentiment Overview</h1>
-            <p>Analyze and track customer feedback in real-time across your entire platform.</p>
-        </div>
-
-        <!-- Metrics Grid (Floating Cards) -->
-        <section class="metrics-grid animate-fade-in" style="animation-delay: 0.1s;">
-            <div class="metric-card">
-                <div class="metric-top">
-                    <span class="metric-label">Total Feedback Analyzed</span>
-                    <div class="icon-wrap bg-blue"><i class="fa-solid fa-database"></i></div>
-                </div>
-                <div class="metric-value">
-                    <span id="totalPosts" class="counter">0</span>
-                </div>
+                <p>Analyze and track customer feedback in real-time across your entire platform.</p>
             </div>
 
-            <div class="metric-card">
-                <div class="metric-top">
-                    <span class="metric-label">Positive Sentiment</span>
-                    <div class="icon-wrap bg-green"><i class="fa-solid fa-arrow-trend-up"></i></div>
-                </div>
-                <div class="metric-value">
-                    <span id="positivePercentage" class="counter text-green">0%</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar bg-green" id="barPos" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-top">
-                    <span class="metric-label">Negative Sentiment</span>
-                    <div class="icon-wrap bg-red"><i class="fa-solid fa-arrow-trend-down"></i></div>
-                </div>
-                <div class="metric-value">
-                    <span id="negativePercentage" class="counter text-red">0%</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar bg-red" id="barNeg" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <div class="metric-card">
-                <div class="metric-top">
-                    <span class="metric-label">Neutral Baseline</span>
-                    <div class="icon-wrap bg-yellow"><i class="fa-solid fa-minus"></i></div>
-                </div>
-                <div class="metric-value">
-                    <span id="neutralPercentage" class="counter text-yellow">0%</span>
-                </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar bg-yellow" id="barNeu" style="width: 0%"></div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Main Content Area -->
-        <div class="content-layout animate-fade-in" style="animation-delay: 0.2s;">
-
-            <!-- Analysis Engine Column -->
-            <div class="analysis-column">
-                <div class="premium-card engine-card">
-                    <div class="card-header">
-                        <h2>Run New Analysis</h2>
-                        <i class="fa-solid fa-wand-magic-sparkles text-gradient"></i>
+            <!-- Metrics Grid (Floating Cards) -->
+            <section class="metrics-grid animate-fade-in" style="animation-delay: 0.1s;">
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-label">Total Feedback Analyzed</span>
+                        <div class="icon-wrap bg-blue"><i class="fa-solid fa-database"></i></div>
                     </div>
-                    <div class="input-area">
-                        <textarea id="input" placeholder="Type or paste customer feedback here... 
+                    <div class="metric-value">
+                        <span id="totalPosts" class="counter">0</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-label">Positive Sentiment</span>
+                        <div class="icon-wrap bg-green"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                    </div>
+                    <div class="metric-value">
+                        <span id="positivePercentage" class="counter text-green">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar bg-green" id="barPos" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-label">Negative Sentiment</span>
+                        <div class="icon-wrap bg-red"><i class="fa-solid fa-arrow-trend-down"></i></div>
+                    </div>
+                    <div class="metric-value">
+                        <span id="negativePercentage" class="counter text-red">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar bg-red" id="barNeg" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-top">
+                        <span class="metric-label">Neutral Baseline</span>
+                        <div class="icon-wrap bg-yellow"><i class="fa-solid fa-minus"></i></div>
+                    </div>
+                    <div class="metric-value">
+                        <span id="neutralPercentage" class="counter text-yellow">0%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar bg-yellow" id="barNeu" style="width: 0%"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Content Area -->
+            <div class="content-layout animate-fade-in" style="animation-delay: 0.2s;">
+
+                <!-- Analysis Engine Column -->
+                <div class="analysis-column">
+                    <div class="premium-card engine-card">
+                        <div class="card-header">
+                            <h2>Run New Analysis</h2>
+                            <i class="fa-solid fa-wand-magic-sparkles text-gradient"></i>
+                        </div>
+                        <div class="input-area">
+                            <textarea id="input" placeholder="Type or paste customer feedback here... 
 Example: 'The new dashboard update is absolutely brilliant. It saved my team 5 hours this week!'"></textarea>
-                    </div>
-                    <div class="engine-actions">
-                        <button id="analyzeBtn" onclick="analyzePost()" class="btn-primary">
-                            <span class="btn-text">Analyze Feedback <i
-                                    class="fa-solid fa-arrow-right-long ml-2"></i></span>
-                            <div class="loading-spinner hidden">
-                                <i class="fa-solid fa-circle-notch fa-spin"></i> Processing...
-                            </div>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Distribution Chart -->
-                <div class="premium-card mt-6">
-                    <div class="card-header">
-                        <h2>Sentiment Distribution</h2>
-                        <i class="fa-solid fa-chart-pie text-muted"></i>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="sentimentChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- Trend Chart -->
-                <div class="premium-card mt-6">
-                    <div class="card-header">
-                        <h2>Sentiment Trend</h2>
-                        <i class="fa-solid fa-chart-line text-muted"></i>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="trendChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- History Feed Column -->
-            <div class="history-column">
-                <div class="premium-card history-card">
-                    <div class="card-header border-bottom">
-                        <div class="header-titles">
-                            <h2>Feedback Stream</h2>
-                            <span class="history-badge" id="historyCount">0 Total</span>
+                        </div>
+                        <div class="engine-actions">
+                            <button id="analyzeBtn" onclick="analyzePost()" class="btn-primary">
+                                <span class="btn-text">Analyze Feedback <i
+                                        class="fa-solid fa-arrow-right-long ml-2"></i></span>
+                                <div class="loading-spinner hidden">
+                                    <i class="fa-solid fa-circle-notch fa-spin"></i> Processing...
+                                </div>
+                            </button>
                         </div>
                     </div>
 
-                    <div id="postsContainer" class="feed-container">
-                        <div class="empty-state">
-                            <div class="empty-icon-wrapper">
-                                <i class="fa-solid fa-magnifying-glass-chart"></i>
-                            </div>
-                            <h3>Awaiting Data</h3>
-                            <p>Your analysis feed will populate here.</p>
+                    <!-- Distribution Chart -->
+                    <div class="premium-card mt-6">
+                        <div class="card-header">
+                            <h2>Sentiment Distribution</h2>
+                            <i class="fa-solid fa-chart-pie text-muted"></i>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="sentimentChart"></canvas>
                         </div>
                     </div>
 
-                    <div class="pagination-footer">
-                        <button id="prevPage" class="btn-icon" onclick="changePage(-1)" disabled>
-                            <i class="fa-solid fa-chevron-left"></i>
-                        </button>
-                        <span id="pageIndicator" class="page-text">1 / 1</span>
-                        <button id="nextPage" class="btn-icon" onclick="changePage(1)" disabled>
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </button>
+                    <!-- Trend Chart -->
+                    <div class="premium-card mt-6">
+                        <div class="card-header">
+                            <h2>Sentiment Trend</h2>
+                            <i class="fa-solid fa-chart-line text-muted"></i>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="trendChart"></canvas>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-        </div>
+                <!-- History Feed Column -->
+                <div class="history-column">
+                    <div class="premium-card history-card">
+                        <div class="card-header border-bottom">
+                            <div class="header-titles">
+                                <h2>Feedback Stream</h2>
+                                <span class="history-badge" id="historyCount">0 Total</span>
+                            </div>
+                        </div>
+
+                        <div id="postsContainer" class="feed-container">
+                            <div class="empty-state">
+                                <div class="empty-icon-wrapper">
+                                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+                                </div>
+                                <h3>Awaiting Data</h3>
+                                <p>Your analysis feed will populate here.</p>
+                            </div>
+                        </div>
+
+                        <div class="pagination-footer">
+                            <button id="prevPage" class="btn-icon" onclick="changePage(-1)" disabled>
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
+                            <span id="pageIndicator" class="page-text">1 / 1</span>
+                            <button id="nextPage" class="btn-icon" onclick="changePage(1)" disabled>
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
         <!-- End Dashboard View -->
 
@@ -261,9 +261,12 @@ Example: 'The new dashboard update is absolutely brilliant. It saved my team 5 h
                         <div id="propNeg" class="proportion-segment bg-neg" style="width: 0%" title="Negative"></div>
                     </div>
                     <div class="proportion-labels mt-2">
-                        <span class="text-green"><i class="fa-solid fa-circle"></i> Positive: <strong id="lblPropPos">0%</strong></span>
-                        <span class="text-yellow"><i class="fa-solid fa-circle"></i> Neutral: <strong id="lblPropNeu">0%</strong></span>
-                        <span class="text-red"><i class="fa-solid fa-circle"></i> Negative: <strong id="lblPropNeg">0%</strong></span>
+                        <span class="text-green"><i class="fa-solid fa-circle"></i> Positive: <strong
+                                id="lblPropPos">0%</strong></span>
+                        <span class="text-yellow"><i class="fa-solid fa-circle"></i> Neutral: <strong
+                                id="lblPropNeu">0%</strong></span>
+                        <span class="text-red"><i class="fa-solid fa-circle"></i> Negative: <strong
+                                id="lblPropNeg">0%</strong></span>
                     </div>
                 </div>
             </div>
