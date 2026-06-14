@@ -21,9 +21,12 @@ if (geminiKey === "AIzaSyCvW6CrMeVSbfRvhDTEle4U5wtZDKQ6Y3A") {
 window.onload = function () {
     loadFromLocalStorage();
     initChart();
+    initTrendChart();
     updateMetrics();
     renderPosts();
     updateChart();
+    updateTrendChart();
+    updateChartThemes(currentTheme);
 };
 
 function saveToLocalStorage() {
@@ -56,6 +59,7 @@ function clearHistory() {
         updateMetrics();
         renderPosts();
         updateChart();
+        updateTrendChart();
         if (reportsView && !reportsView.classList.contains('hidden')) {
             generateReport();
         }
@@ -110,8 +114,15 @@ async function analyzePost() {
         analyzeBtn.disabled = true;
         btnText.classList.add('hidden');
         spinner.classList.remove('hidden');
+        showSkeleton();
 
         const result = await analyzeSentimentWithGemini(text);
+
+        const skeleton = document.getElementById('postSkeleton');
+        if (skeleton) {
+            skeleton.remove();
+        }
+
         addPost(text, result);
 
         input.value = '';
@@ -132,6 +143,13 @@ async function analyzePost() {
         analyzeBtn.disabled = false;
         btnText.classList.remove('hidden');
         spinner.classList.add('hidden');
+        const skeleton = document.getElementById('postSkeleton');
+        if (skeleton) {
+            skeleton.remove();
+        }
+        if (posts.length === 0) {
+            renderPosts();
+        }
         input.focus();
     }
 }
@@ -226,6 +244,7 @@ function addPost(text, result) {
     currentPage = 1; // Reset to first page to see new post
     renderPosts();
     updateChart();
+    updateTrendChart();
 }
 
 function renderPosts() {
@@ -720,3 +739,209 @@ function exportCSV() {
     document.body.removeChild(link);
     showToast('Report exported as CSV successfully', 'success');
 }
+
+// ==========================================
+// Theme Toggling Logic
+// ==========================================
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+let currentTheme = localStorage.getItem('sentiPulseTheme') || 'light';
+
+if (currentTheme === 'dark') {
+    document.body.classList.add('dark-theme');
+    if (themeToggleBtn) {
+        themeToggleBtn.innerHTML = '<i class="fa-regular fa-sun"></i>';
+    }
+}
+
+if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+        if (document.body.classList.contains('dark-theme')) {
+            document.body.classList.remove('dark-theme');
+            themeToggleBtn.innerHTML = '<i class="fa-regular fa-moon"></i>';
+            localStorage.setItem('sentiPulseTheme', 'light');
+            currentTheme = 'light';
+            updateChartThemes('light');
+        } else {
+            document.body.classList.add('dark-theme');
+            themeToggleBtn.innerHTML = '<i class="fa-regular fa-sun"></i>';
+            localStorage.setItem('sentiPulseTheme', 'dark');
+            currentTheme = 'dark';
+            updateChartThemes('dark');
+        }
+    });
+}
+
+function updateChartThemes(theme) {
+    const isDark = theme === 'dark';
+    const textColor = isDark ? '#94A3B8' : '#475569';
+    const gridColor = isDark ? '#334155' : '#e2e8f0';
+
+    Chart.defaults.color = textColor;
+
+    // Update Donut Chart
+    if (chart) {
+        chart.options.plugins.legend.labels.color = textColor;
+        chart.options.plugins.tooltip.backgroundColor = isDark ? '#131926' : '#ffffff';
+        chart.options.plugins.tooltip.titleColor = isDark ? '#ffffff' : '#0f172a';
+        chart.options.plugins.tooltip.bodyColor = isDark ? '#e2e8f0' : '#475569';
+        chart.options.plugins.tooltip.borderColor = isDark ? '#334155' : '#e2e8f0';
+        chart.update();
+    }
+
+    // Update Trend Chart
+    if (trendChart) {
+        trendChart.options.scales.x.ticks.color = textColor;
+        trendChart.options.scales.x.grid.color = gridColor;
+        trendChart.options.scales.y.ticks.color = textColor;
+        trendChart.options.scales.y.grid.color = gridColor;
+        trendChart.options.plugins.legend.labels.color = textColor;
+        trendChart.options.plugins.tooltip.backgroundColor = isDark ? '#131926' : '#ffffff';
+        trendChart.options.plugins.tooltip.titleColor = isDark ? '#ffffff' : '#0f172a';
+        trendChart.options.plugins.tooltip.bodyColor = isDark ? '#e2e8f0' : '#475569';
+        trendChart.options.plugins.tooltip.borderColor = isDark ? '#334155' : '#e2e8f0';
+        trendChart.update();
+    }
+}
+
+// ==========================================
+// Sentiment Trend Line Chart
+// ==========================================
+let trendChart;
+
+function initTrendChart() {
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    const isDark = document.body.classList.contains('dark-theme');
+    const textColor = isDark ? '#94A3B8' : '#475569';
+    const gridColor = isDark ? '#334155' : '#e2e8f0';
+
+    trendChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: 'SentiPulse Timeline',
+                data: [],
+                borderColor: '#6366F1',
+                backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                borderWidth: 3,
+                tension: 0.4,
+                fill: true,
+                pointBackgroundColor: '#6366F1',
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: {
+                    grid: {
+                        color: gridColor
+                    },
+                    ticks: {
+                        color: textColor
+                    }
+                },
+                y: {
+                    min: -100,
+                    max: 100,
+                    grid: {
+                        color: gridColor
+                    },
+                    ticks: {
+                        color: textColor,
+                        callback: function(value) {
+                            if (value === 100) return 'Positive';
+                            if (value === 0) return 'Neutral';
+                            if (value === -100) return 'Negative';
+                            return value + '%';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: isDark ? '#131926' : '#ffffff',
+                    titleColor: isDark ? '#ffffff' : '#0f172a',
+                    bodyColor: isDark ? '#e2e8f0' : '#475569',
+                    borderColor: isDark ? '#334155' : '#e2e8f0',
+                    borderWidth: 1,
+                    callbacks: {
+                        label: function(context) {
+                            const val = context.raw;
+                            if (val > 0) return `Positive (${val}%)`;
+                            if (val < 0) return `Negative (${Math.abs(val)}%)`;
+                            return 'Neutral';
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
+function updateTrendChart() {
+    if (!trendChart) return;
+
+    // Get the last 10 posts in chronological order (oldest to newest)
+    const last10 = posts.slice(0, 10).reverse();
+    
+    const labels = last10.map(p => p.timestamp);
+    const data = last10.map(p => {
+        if (p.sentiment === 'positive') return p.confidence || 0;
+        if (p.sentiment === 'negative') return -(p.confidence || 0);
+        return 0; // neutral is 0
+    });
+
+    trendChart.data.labels = labels;
+    trendChart.data.datasets[0].data = data;
+    
+    // Adjust gradient color
+    const ctx = document.getElementById('trendChart').getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+    const isDark = document.body.classList.contains('dark-theme');
+    if (isDark) {
+        gradient.addColorStop(0, 'rgba(99, 102, 241, 0.4)');
+        gradient.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
+    } else {
+        gradient.addColorStop(0, 'rgba(99, 102, 241, 0.2)');
+        gradient.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
+    }
+    trendChart.data.datasets[0].backgroundColor = gradient;
+
+    trendChart.update();
+}
+
+// ==========================================
+// Skeleton Loader Screen
+// ==========================================
+function showSkeleton() {
+    const postsContainer = document.getElementById('postsContainer');
+    
+    // Check if empty-state is present, remove it temporarily
+    const emptyState = postsContainer.querySelector('.empty-state');
+    if (emptyState) {
+        postsContainer.innerHTML = '';
+    }
+
+    const skeletonHTML = `
+        <div class="skeleton-card" id="postSkeleton">
+            <div class="skeleton-header">
+                <div class="skeleton-line header-time"></div>
+                <div class="skeleton-line header-badge"></div>
+            </div>
+            <div class="skeleton-line text-1"></div>
+            <div class="skeleton-line text-2"></div>
+            <div class="skeleton-footer">
+                <div class="skeleton-line footer-tag"></div>
+                <div class="skeleton-line footer-tag"></div>
+                <div class="skeleton-line footer-phrase"></div>
+            </div>
+        </div>
+    `;
+    postsContainer.insertAdjacentHTML('afterbegin', skeletonHTML);
+}
+

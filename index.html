@@ -47,6 +47,9 @@
                 <button class="btn-secondary" onclick="clearHistory()">
                     <i class="fa-regular fa-trash-can"></i> Clear Data
                 </button>
+                <button id="themeToggleBtn" class="btn-icon-nav" title="Toggle Theme">
+                    <i class="fa-regular fa-moon"></i>
+                </button>
                 <div class="user-avatar">
                     <span>W</span>
                 </div>
@@ -148,6 +151,17 @@ Example: 'The new dashboard update is absolutely brilliant. It saved my team 5 h
                     </div>
                     <div class="chart-container">
                         <canvas id="sentimentChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Trend Chart -->
+                <div class="premium-card mt-6">
+                    <div class="card-header">
+                        <h2>Sentiment Trend</h2>
+                        <i class="fa-solid fa-chart-line text-muted"></i>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
                     </div>
                 </div>
             </div>
